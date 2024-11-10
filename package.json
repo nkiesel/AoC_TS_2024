@@ -1,0 +1,27 @@
+{
+  "name": "aoc2024",
+  "version": "1.0.0",
+  "description": "Advent of Code 2024 - solutions",
+  "type": "module",
+  "scripts": {
+    "start": "aocrunner day",
+    "build": "aocrunner build",
+    "format": "prettier -w src",
+    "update:readme": "aocrunner update:readme"
+  },
+  "keywords": [
+    "aoc"
+  ],
+  "author": "Norbert Kiesel",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/lodash-es": "^4.17.12",
+    "@types/node": "^16.11.6",
+    "aocrunner": "^1.9.6",
+    "lodash-es": "^4.17.21",
+    "prettier": "^2.8.0"
+  },
+  "engines": {
+    "node": ">=20.17.0"
+  }
+}
