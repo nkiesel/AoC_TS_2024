@@ -1,23 +1,18 @@
 import run from "aocrunner"
-import { countBy, sum, zip } from "lodash-es"
+import { countBy, sum, unzip, zip } from "lodash-es"
 
 const parseInput = (rawInput: string) => {
-  const lines = rawInput
-    .split("\n")
-    .map((l) => l.split(/\s+/).map((n) => parseInt(n, 10)))
-  const left = lines.map((l) => l[0])
-  const right = lines.map((l) => l[1])
-  return [left, right]
+  return unzip(
+    rawInput.split("\n").map((l) => l.split(/\s+/).map((n) => parseInt(n, 10))),
+  )
 }
 
 const part1 = (rawInput: string) => {
-  const [left, right] = parseInput(rawInput)
-  const sortedLeft = left.sort((a, b) => a - b)
-  const sortedRight = right.sort((a, b) => a - b)
-  return sum(zip(sortedLeft, sortedRight).map(([l, r]) => Math.abs(l - r)))
+  const [left, right] = parseInput(rawInput).map(it => it.sort((a, b) => a - b))
+  return sum(zip(left, right).map(([l, r]) => Math.abs(l - r)))
 }
 
-const part2 = (rawInput: string) => {
+const part2UsingCountBy = (rawInput: string) => {
   const [left, right] = parseInput(rawInput)
   return sum(
     left.map((l) => {
@@ -25,6 +20,11 @@ const part2 = (rawInput: string) => {
       return l * (isNaN(count) ? 0 : count)
     }),
   )
+}
+
+const part2 = (rawInput: string) => {
+  const [left, right] = parseInput(rawInput)
+  return sum(left.map((l) => l * right.filter((r) => r === l).length))
 }
 
 const sample1 = `
