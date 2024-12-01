@@ -13,5 +13,8 @@ items is the searched value.
 After learning about unzip in Kotlin, I now learned that lodash also has an unzip method. Thus, updated the
 parseInput to use that.
 
-And finally replaced the complicated countBy with .filter().length, making the code now very similar to my Kotlin 
+Then replaced the complicated countBy with .filter().length, making the code now very similar to my Kotlin 
 solution.
+
+Finally learned that using countBy without a filter expression returns a grouping of values, and thus ended up 
+preferring that solution again.

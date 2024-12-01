@@ -12,17 +12,13 @@ const part1 = (rawInput: string) => {
   return sum(zip(left, right).map(([l, r]) => Math.abs(l - r)))
 }
 
-const part2UsingCountBy = (rawInput: string) => {
+const part2 = (rawInput: string) => {
   const [left, right] = parseInput(rawInput)
-  return sum(
-    left.map((l) => {
-      const count = countBy(right, (n) => n === l).true
-      return l * (isNaN(count) ? 0 : count)
-    }),
-  )
+  const rc = countBy(right)
+  return sum(left.map((l) => l * (rc[l.toString()] ?? 0)))
 }
 
-const part2 = (rawInput: string) => {
+const part2UsingFilter = (rawInput: string) => {
   const [left, right] = parseInput(rawInput)
   return sum(left.map((l) => l * right.filter((r) => r === l).length))
 }
