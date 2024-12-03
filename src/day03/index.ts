@@ -12,12 +12,12 @@ const part1 = (rawInput: string) => {
 }
 
 const part2 = (rawInput: string) => {
-  const matches = parseInput(rawInput).matchAll(/mul\((\d{1,3}),(\d{1,3})\)|do(n't)?\(\)/g)
+  const matches = parseInput(rawInput).matchAll(/mul\((\d{1,3}),(\d{1,3})\)|do(?:n't)?\(\)/g)
   let sum = 0
   let enabled = true
   for (const m of matches) {
-    if (m[0].startsWith("mul")) {
-      if (enabled) sum += parseInt(m[1], 10) * parseInt(m[2], 10)
+    if (enabled && m[0].startsWith("mul")) {
+      sum += parseInt(m[1], 10) * parseInt(m[2], 10)
     } else {
       enabled = m[0] === "do()"
     }
