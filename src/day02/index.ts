@@ -7,10 +7,10 @@ const parseInput = (rawInput: string) =>
     .map((it) => it.split(/\s+/).map((it) => parseInt(it, 10)))
 
 function isValid(nums: number[]): boolean {
-  const descending = Math.sign(nums[0] - nums[1])
+  const sign = Math.sign(nums[0] - nums[1])
   for (let i = 1; i < nums.length; i++) {
     const d = nums[i - 1] - nums[i]
-    if (d === 0 || Math.abs(d) > 3 || Math.sign(d) != descending) return false
+    if (d === 0 || Math.abs(d) > 3 || Math.sign(d) !== sign) return false
   }
   return true
 }
