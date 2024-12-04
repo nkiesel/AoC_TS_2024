@@ -1,29 +1,21 @@
 import run from "aocrunner"
 
-const point = (x: number, y: number) => `${x}-${y}`
+const point = (x: number, y: number): string => `${x},${y}`
+const tniop = (p: string): number[] => p.split(",").map((it) => parseInt(it, 10))
 
 const parseInput = (rawInput: string): Set<string>[] => {
-  const input = rawInput.split("\n")
   const allX = new Set<string>()
   const allM = new Set<string>()
   const allA = new Set<string>()
   const allS = new Set<string>()
-  input.forEach((row, y) =>
+  rawInput.split("\n").forEach((row, y) =>
     row.split("").forEach((c, x) => {
       const p = point(x, y)
       switch (c) {
-        case "X":
-          allX.add(p)
-          break
-        case "M":
-          allM.add(p)
-          break
-        case "A":
-          allA.add(p)
-          break
-        case "S":
-          allS.add(p)
-          break
+        case "X": allX.add(p); break
+        case "M": allM.add(p); break
+        case "A": allA.add(p); break
+        case "S": allS.add(p); break
       }
     }),
   )
@@ -33,18 +25,9 @@ const parseInput = (rawInput: string): Set<string>[] => {
 const part1 = (rawInput: string) => {
   const [allX, allM, allA, allS] = parseInput(rawInput)
   let count = 0
-  allX.forEach((xy) => {
-    const [x, y] = xy.split("-").map((it) => parseInt(it, 10))
-    for (const [dx, dy] of [
-      [-1, -1],
-      [-1, 0],
-      [-1, 1],
-      [0, -1],
-      [0, 1],
-      [1, -1],
-      [1, 0],
-      [1, 1],
-    ]) {
+  allX.forEach((p) => {
+    const [x, y] = tniop(p)
+    for (const [dx, dy] of [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]]) {
       if (
         allM.has(point(x + dx * 1, y + dy * 1)) &&
         allA.has(point(x + dx * 2, y + dy * 2)) &&
@@ -59,8 +42,8 @@ const part1 = (rawInput: string) => {
 const part2 = (rawInput: string) => {
   const [_, allM, allA, allS] = parseInput(rawInput)
   let count = 0
-  allA.forEach((xy) => {
-    const [x, y] = xy.split("-").map((it) => parseInt(it, 10))
+  allA.forEach((p) => {
+    const [x, y] = tniop(p)
     const tl = point(x - 1, y - 1)
     const tr = point(x + 1, y - 1)
     const bl = point(x - 1, y + 1)
