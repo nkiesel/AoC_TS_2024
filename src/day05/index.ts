@@ -5,6 +5,8 @@ const orders: number[][] = []
 const updates: number[][] = []
 
 const parseInput = (rawInput: string) => {
+  updates.length = 0
+  orders.length = 0
   for (const line of rawInput.split("\n")) {
     if (line.includes("|")) {
       orders.push(line.split("|").map((i) => parseInt(i, 10)))
