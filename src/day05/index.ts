@@ -51,7 +51,7 @@ function fixed(update: number[], orders: number[][]): number[] {
       (i) => !orders.some((o) => o[0] === i && lastCandidates.includes(o[1])),
     )
     fixed.push(last)
-    lastCandidates = lastCandidates.filter((c) => c !== last)
+    lastCandidates.splice(lastCandidates.indexOf(last), 1)
   }
   return fixed.reverse()
 }
