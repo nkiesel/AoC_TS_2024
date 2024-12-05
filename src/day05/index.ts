@@ -1,9 +1,10 @@
 import run from "aocrunner"
 import { isEmpty, sum } from "lodash-es"
 
+const orders: number[][] = []
+const updates: number[][] = []
+
 const parseInput = (rawInput: string) => {
-  const orders: number[][] = []
-  const updates: number[][] = []
   for (const line of rawInput.split("\n")) {
     if (line.includes("|")) {
       orders.push(line.split("|").map((i) => parseInt(i, 10)))
@@ -11,29 +12,28 @@ const parseInput = (rawInput: string) => {
       updates.push(line.split(",").map((i) => parseInt(i, 10)))
     }
   }
-  return [orders, updates]
 }
 
 const part1 = (rawInput: string) => {
-  const [orders, updates] = parseInput(rawInput)
+  parseInput(rawInput)
   return sum(
     updates
-      .filter((u) => isValid(u, orders))
+      .filter((u) => isValid(u))
       .map((u) => u[Math.floor(u.length / 2)]),
   )
 }
 
 const part2 = (rawInput: string) => {
-  const [orders, updates] = parseInput(rawInput)
+  parseInput(rawInput)
   return sum(
     updates
-      .filter((u) => !isValid(u, orders))
-      .map((u) => fixed(u, orders))
+      .filter((u) => !isValid(u))
+      .map((u) => fixed(u))
       .map((u) => u[Math.floor(u.length / 2)]),
   )
 }
 
-function isValid(update: number[], orders: number[][]): boolean {
+function isValid(update: number[]): boolean {
   for (let i = 0; i < update.length; i++) {
     const page = update[i]
     const mustBeBefore = orders.filter((o) => o[1] === page).map((o) => o[0])
@@ -43,7 +43,7 @@ function isValid(update: number[], orders: number[][]): boolean {
   return true
 }
 
-function fixed(update: number[], orders: number[][]): number[] {
+function fixed(update: number[]): number[] {
   const fixed: number[] = []
   let lastCandidates: number[] = [...update]
   while (!isEmpty(lastCandidates)) {
