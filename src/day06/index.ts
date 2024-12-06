@@ -57,17 +57,16 @@ function path(area: string[], start: string): Set<string> {
   visited.add(start)
   let p = tniop(start)
   let dir = Direction.N
-  let n = move(p, dir)
-  while (inArea(area, n)) {
+  while (true) {
+    const n = move(p, dir)
+    if (!inArea(area, n)) return visited
     if (get(area, n) === "#") {
       dir = right(dir)
-      n = move(p, dir)
+    } else {
+      p = n
+      visited.add(point(p))
     }
-    p = n
-    visited.add(point(p))
-    n = move(p, dir)
   }
-  return visited
 }
 
 const part2 = (rawInput: string) => {
@@ -91,19 +90,18 @@ function loop(area: string[], start: string): boolean {
   let dir = Direction.N
   visited.add(start + dir)
   let p = tniop(start)
-  let n = move(p, dir)
-  while (inArea(area, n)) {
-    while (get(area, n) === "#") {
+  while (true) {
+    const n = move(p, dir)
+    if (!inArea(area, n)) return false
+    if (get(area, n) === "#") {
       dir = right(dir)
-      n = move(p, dir)
+    } else {
+      p = n
+      let pos = point(p) + dir
+      if (visited.has(pos)) return true
+      visited.add(pos)
     }
-    p = n
-    let pos = point(p) + dir
-    if (visited.has(pos)) return true
-    visited.add(pos)
-    n = move(p, dir)
   }
-  return false
 }
 
 const sample1 = `
