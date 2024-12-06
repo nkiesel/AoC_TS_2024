@@ -1,6 +1,7 @@
 import run from "aocrunner"
 
-const parseInput = (rawInput: string) => rawInput.split("\n")
+const parseInput = (rawInput: string) =>
+  rawInput.split("\n").map((r) => r.split(""))
 
 enum Direction {
   N,
@@ -27,16 +28,14 @@ const point = (p: number[]): string => `${p[0]},${p[1]}`
 const tniop = (p: string): number[] =>
   p.split(",").map((it) => parseInt(it, 10))
 
-const inArea = (area: string[], n: number[]) =>
+const inArea = (area: string[][], n: number[]) =>
   n[0] >= 0 && n[0] < area[0].length && n[1] >= 0 && n[1] < area.length
 
-const get = (area: string[], n: number[]): string => area[n[1]][n[0]]
+const get = (area: string[][], n: number[]): string => area[n[1]][n[0]]
 
-const set = (area: string[], p: string, c: string): string[] => {
+const set = (area: string[][], p: string, c: string): void => {
   const [x, y] = tniop(p)
-  const r = [...area]
-  r[y] = r[y].substring(0, x) + c + r[y].substring(x + 1)
-  return r
+  area[y][x] = c
 }
 
 const move = (p: number[], d: Direction): number[] => [
@@ -52,7 +51,7 @@ const part1 = (rawInput: string) => {
   return path(input, start).size
 }
 
-function path(area: string[], start: string): Set<string> {
+function path(area: string[][], start: string): Set<string> {
   const visited: Set<string> = new Set()
   visited.add(start)
   let p = tniop(start)
@@ -77,15 +76,15 @@ const part2 = (rawInput: string) => {
   const candidates = path(input, start)
   candidates.delete(start)
   return [...candidates].filter((c) => {
-    input = set(input, c, "#")
+    set(input, c, "#")
     const l = loop(input, start)
-    input = set(input, start, "^")
-    input = set(input, c, ".")
+    set(input, start, "^")
+    set(input, c, ".")
     return l
   }).length
 }
 
-function loop(area: string[], start: string): boolean {
+function loop(area: string[][], start: string): boolean {
   const visited: Set<string> = new Set()
   let dir = Direction.N
   visited.add(start + dir)
