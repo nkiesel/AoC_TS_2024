@@ -80,7 +80,6 @@ const part2 = (rawInput: string) => {
   return [...candidates].filter((c) => {
     set(area, c, "#")
     const l = loop(area, start)
-    set(area, start, "^")
     set(area, c, ".")
     return l
   }).length
