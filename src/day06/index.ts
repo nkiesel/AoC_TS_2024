@@ -28,10 +28,10 @@ const point = (p: number[]): string => `${p[0]},${p[1]}`
 const tniop = (p: string): number[] =>
   p.split(",").map((it) => parseInt(it, 10))
 
-const inArea = (area: string[][], n: number[]) =>
-  n[0] >= 0 && n[0] < area[0].length && n[1] >= 0 && n[1] < area.length
+const inArea = (area: string[][], p: number[]) =>
+  p[0] >= 0 && p[0] < area[0].length && p[1] >= 0 && p[1] < area.length
 
-const get = (area: string[][], n: number[]): string => area[n[1]][n[0]]
+const get = (area: string[][], p: number[]): string => area[p[1]][p[0]]
 
 const set = (area: string[][], p: string, c: string): void => {
   const [x, y] = tniop(p)
@@ -43,12 +43,16 @@ const move = (p: number[], d: Direction): number[] => [
   p[1] + (d === Direction.N ? -1 : d === Direction.S ? 1 : 0),
 ]
 
+const first = (area: string[][], c: string): number[] => {
+  const y = area.findIndex((row) => row.includes("^"))
+  const x = area[y].indexOf(c)
+  return [x, y]
+}
+
 const part1 = (rawInput: string) => {
-  const input = parseInput(rawInput)
-  const startY = input.findIndex((row) => row.includes("^"))
-  const startX = input[startY].indexOf("^")
-  const start = point([startX, startY])
-  return path(input, start).size
+  const area = parseInput(rawInput)
+  const start = point(first(area, "^"))
+  return path(area, start).size
 }
 
 function path(area: string[][], start: string): Set<string> {
@@ -69,17 +73,15 @@ function path(area: string[][], start: string): Set<string> {
 }
 
 const part2 = (rawInput: string) => {
-  let input = parseInput(rawInput)
-  const startY = input.findIndex((row) => row.includes("^"))
-  const startX = input[startY].indexOf("^")
-  const start = point([startX, startY])
-  const candidates = path(input, start)
+  let area = parseInput(rawInput)
+  const start = point(first(area, "^"))
+  const candidates = path(area, start)
   candidates.delete(start)
   return [...candidates].filter((c) => {
-    set(input, c, "#")
-    const l = loop(input, start)
-    set(input, start, "^")
-    set(input, c, ".")
+    set(area, c, "#")
+    const l = loop(area, start)
+    set(area, start, "^")
+    set(area, c, ".")
     return l
   }).length
 }
@@ -96,7 +98,7 @@ function loop(area: string[][], start: string): boolean {
       dir = right(dir)
     } else {
       p = n
-      let pos = point(p) + dir
+      const pos = point(p) + dir
       if (visited.has(pos)) return true
       visited.add(pos)
     }
