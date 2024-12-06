@@ -89,8 +89,9 @@ const part2 = (rawInput: string) => {
 function loop(area: string[][], start: string): boolean {
   const visited: Set<string> = new Set()
   let dir = Direction.N
-  visited.add(start + dir)
   let p = tniop(start)
+  const key = (p: number[]): string => `${p[0]},${p[1]},${dir}`
+  visited.add(key(p))
   while (true) {
     const n = move(p, dir)
     if (!inArea(area, n)) return false
@@ -98,7 +99,7 @@ function loop(area: string[][], start: string): boolean {
       dir = right(dir)
     } else {
       p = n
-      const pos = point(p) + dir
+      const pos = key(p)
       if (visited.has(pos)) return true
       visited.add(pos)
     }
