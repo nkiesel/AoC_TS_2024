@@ -1,105 +1,43 @@
 import run from "aocrunner"
-
-const parseInput = (rawInput: string) =>
-  rawInput.split("\n").map((r) => r.split(""))
-
-enum Direction {
-  N,
-  S,
-  E,
-  W,
-}
-
-const right = (dir: Direction): Direction => {
-  switch (dir) {
-    case Direction.N:
-      return Direction.E
-    case Direction.E:
-      return Direction.S
-    case Direction.S:
-      return Direction.W
-    case Direction.W:
-      return Direction.N
-  }
-}
-
-const point = (p: number[]): string => `${p[0]},${p[1]}`
-
-const tniop = (p: string): number[] =>
-  p.split(",").map((it) => parseInt(it, 10))
-
-const inArea = (area: string[][], p: number[]) =>
-  p[0] >= 0 && p[0] < area[0].length && p[1] >= 0 && p[1] < area.length
-
-const get = (area: string[][], p: number[]): string => area[p[1]][p[0]]
-
-const set = (area: string[][], p: string, c: string): void => {
-  const [x, y] = tniop(p)
-  area[y][x] = c
-}
-
-const move = (p: number[], d: Direction): number[] => [
-  p[0] + (d === Direction.E ? 1 : d === Direction.W ? -1 : 0),
-  p[1] + (d === Direction.N ? -1 : d === Direction.S ? 1 : 0),
-]
-
-const first = (area: string[][], c: string): number[] => {
-  const y = area.findIndex((row) => row.includes("^"))
-  const x = area[y].indexOf(c)
-  return [x, y]
-}
+import { CharArea, Direction, Point, right90 } from "../utils/CharArea.js"
+import { uniq } from "lodash-es"
 
 const part1 = (rawInput: string) => {
-  const area = parseInput(rawInput)
-  const start = point(first(area, "^"))
-  return path(area, start).size
-}
-
-function path(area: string[][], start: string): Set<string> {
-  const visited: Set<string> = new Set()
-  visited.add(start)
-  let p = tniop(start)
-  let dir = Direction.N
-  while (true) {
-    const n = move(p, dir)
-    if (!inArea(area, n)) return visited
-    if (get(area, n) === "#") {
-      dir = right(dir)
-    } else {
-      p = n
-      visited.add(point(p))
-    }
-  }
+  const area = new CharArea(rawInput)
+  const start = area.first("^")
+  return walkToExit(area, start)!.length
 }
 
 const part2 = (rawInput: string) => {
-  let area = parseInput(rawInput)
-  const start = point(first(area, "^"))
-  const candidates = path(area, start)
-  candidates.delete(start)
+  let area = new CharArea(rawInput)
+  const start = area.first("^")
+  const candidates = walkToExit(area, start).filter((p) => !p.equals(start))
   return [...candidates].filter((c) => {
-    set(area, c, "#")
-    const l = loop(area, start)
-    set(area, c, ".")
-    return l
+    area.set(c, "#")
+    const loop = walkToExit(area, start) === undefined
+    area.set(c, ".")
+    return loop
   }).length
 }
 
-function loop(area: string[][], start: string): boolean {
+function walkToExit(area: CharArea, start: Point): Point[] | undefined {
   const visited: Set<string> = new Set()
   let dir = Direction.N
-  let p = tniop(start)
-  const key = (p: number[]): string => `${p[0]},${p[1]},${dir}`
+  let p = start
+  const key = (p: Point): string => `${p}:${dir}`
   visited.add(key(p))
   while (true) {
-    const n = move(p, dir)
-    if (!inArea(area, n)) return false
-    if (get(area, n) === "#") {
-      dir = right(dir)
+    const n = p.move(dir)
+    if (!area.contains(n))
+      return uniq(Array.from(visited).map((v) => v.slice(0, -2))).map((v) =>
+        Point.fromString(v),
+      )
+    if (area.get(n) === "#") {
+      dir = right90(dir)
     } else {
       p = n
       const pos = key(p)
-      if (visited.has(pos)) return true
+      if (visited.has(pos)) return undefined
       visited.add(pos)
     }
   }
