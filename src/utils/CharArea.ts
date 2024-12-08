@@ -109,4 +109,24 @@ export class CharArea {
     const x = this.area[y].indexOf(c)
     return new Point(x, y)
   }
+
+  tiles(filter?: (c: string) => boolean): Point[] {
+    const list: Point[] = []
+    for (let y = 0; y <= this.maxY; y++) {
+      for (let x = 0; x <= this.maxX; x++) {
+        const p = new Point(x, y)
+        if (!filter || filter(this.get(p))) {
+          list.push(p)
+        }
+      }
+    }
+    return list
+  }
+
+  groups(filter?: (c: string) => boolean): { [key: string]: Point[] } {
+    return this.tiles(filter).reduce((acc, point) => {
+      ;(acc[this.get(point)] ||= []).push(point)
+      return acc
+    }, {} as { [key: string]: Point[] })
+  }
 }
