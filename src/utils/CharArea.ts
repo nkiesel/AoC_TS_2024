@@ -129,4 +129,13 @@ export class CharArea {
       return acc
     }, {} as { [key: string]: Point[] })
   }
+
+  neighbors4(p: Point): Point[] {
+    return [
+      p.move(Direction.N),
+      p.move(Direction.E),
+      p.move(Direction.S),
+      p.move(Direction.W),
+    ].filter((p) => this.contains(p))
+  }
 }
