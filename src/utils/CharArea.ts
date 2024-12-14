@@ -38,9 +38,9 @@ const step: Map<Direction, number[]> = new Map([
   [Direction.E, [1, 0]],
   [Direction.S, [0, 1]],
   [Direction.W, [-1, 0]],
-  [Direction.NE, [-1, 1]],
-  [Direction.NW, [-1, 1]],
-  [Direction.SW, [1, -1]],
+  [Direction.NE, [1, -1]],
+  [Direction.NW, [-1, -1]],
+  [Direction.SW, [-1, 1]],
   [Direction.SE, [1, 1]],
 ])
 
@@ -76,6 +76,31 @@ export class Point {
   move(dir: Direction, n?: number) {
     const [dx, dy] = step.get(dir)
     return this.moveXY(dx, dy, n)
+  }
+}
+
+export const point = (s: string)=> Point.fromString(s)
+
+export class PointSet {
+  private set = new Set<string>
+
+  has(p: Point): boolean {
+    return this.set.has(p.toString())
+  }
+
+  add(p: Point): boolean {
+    const ps = p.toString()
+    if (this.set.has(ps)) return false
+    this.set.add(ps)
+    return true
+  }
+
+  get size() {
+    return this.set.size
+  }
+
+  get items() {
+    return [...this.set].map(ps => Point.fromString(ps))
   }
 }
 
