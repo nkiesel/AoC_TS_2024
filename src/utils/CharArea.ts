@@ -79,10 +79,10 @@ export class Point {
   }
 }
 
-export const point = (s: string)=> Point.fromString(s)
+export const point = (s: string) => Point.fromString(s)
 
 export class PointSet {
-  private set = new Set<string>
+  private set = new Set<string>()
 
   has(p: Point): boolean {
     return this.set.has(p.toString())
@@ -95,12 +95,23 @@ export class PointSet {
     return true
   }
 
+  addAll(points: PointSet): number {
+    let added = 0
+    points.set.forEach((p) => {
+      if (!this.set.has(p)) {
+        this.set.add(p)
+        added++
+      }
+    })
+    return added
+  }
+
   get size() {
     return this.set.size
   }
 
   get items() {
-    return [...this.set].map(ps => Point.fromString(ps))
+    return [...this.set].map((ps) => Point.fromString(ps))
   }
 }
 

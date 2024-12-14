@@ -1,5 +1,5 @@
 import run from "aocrunner"
-import { CharArea, Point } from "../utils/CharArea.js"
+import { CharArea, Point, PointSet } from "../utils/CharArea.js"
 import { sum } from "lodash-es"
 
 const parseInput = (rawInput: string) => new CharArea(rawInput)
@@ -24,12 +24,12 @@ const combined = (rawInput: string, part: number) => {
             ),
         )
         let count = 0
-        const set = new Set<string>()
+        const set = new PointSet()
 
         for (const p of path) {
           if (area.get(p) === "9") {
             count++
-            set.add(p.toString())
+            set.add(p)
           }
         }
         return part === 1 ? set.size : count
