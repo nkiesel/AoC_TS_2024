@@ -44,6 +44,13 @@ const step: Map<Direction, number[]> = new Map([
   [Direction.SE, [1, 1]],
 ])
 
+const urdl: Map<string, Direction> = new Map([
+  ["^", Direction.N],
+  [">", Direction.E],
+  ["v", Direction.S],
+  ["<", Direction.W],
+])
+
 export const right90 = (dir: Direction): Direction => {
   return r90.get(dir)
 }
@@ -51,6 +58,8 @@ export const right90 = (dir: Direction): Direction => {
 export const left90 = (dir: Direction): Direction => {
   return l90.get(dir)
 }
+
+export const fromChar = (c: string): Direction => urdl.get(c)
 
 export class Point {
   public constructor(readonly x: number, readonly y: number) {}
@@ -117,8 +126,8 @@ export class PointSet {
 
 export class CharArea {
   private readonly area: string[][] = []
-  private readonly maxX: number
-  private readonly maxY: number
+  readonly maxX: number
+  readonly maxY: number
 
   constructor(s: string) {
     this.area = s.split("\n").map((l) => l.split(""))
@@ -139,9 +148,14 @@ export class CharArea {
     this.area[p.y][p.x] = c
   }
 
+  setXY(x: number, y: number, c: string) {
+    assert(c.length === 1, "value must be a single char")
+    this.area[y][x] = c
+  }
+
   first(c: string): Point {
     assert(c.length === 1, "value must be a single char")
-    const y = this.area.findIndex((row) => row.includes("^"))
+    const y = this.area.findIndex((row) => row.includes(c))
     const x = this.area[y].indexOf(c)
     return new Point(x, y)
   }
