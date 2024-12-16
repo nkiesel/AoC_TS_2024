@@ -69,8 +69,10 @@ export class Point {
     return new Point(x, y)
   }
 
-  toString(): string {
-    return `${this.x},${this.y}`
+  toString(suffix?: unknown): string {
+    return suffix === undefined
+      ? `${this.x},${this.y}`
+      : `${this.x},${this.y},${suffix}`
   }
 
   equals(p: Point): boolean {

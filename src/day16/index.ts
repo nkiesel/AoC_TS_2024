@@ -10,18 +10,16 @@ import { min, uniq } from "lodash-es"
 
 const parseInput = (rawInput: string) => new CharArea(rawInput)
 
+const part1 = (rawInput: string) => combined(rawInput)[0].cost
+
+const part2 = (rawInput: string) =>
+  uniq(combined(rawInput).flatMap((s) => s.path)).length
+
 type Step = {
   p: Point
   d: Direction
   cost: number
   path: string[]
-}
-
-const part1 = (rawInput: string) => {
-  return combined(rawInput)[0].cost
-}
-const part2 = (rawInput: string) => {
-  return uniq(combined(rawInput).flatMap(s => s.path)).length
 }
 
 const combined = (rawInput: string) => {
@@ -41,9 +39,9 @@ const combined = (rawInput: string) => {
       [s.d, left90(s.d), right90(s.d)]
         .map((d) => ({ p: s.p.move(d), d }))
         .filter((c) => area.get(c.p) !== "#")
-        .forEach(({p, d}) => {
-          const cost = s.cost + 1 + (d !== s.d ? 1000 : 0)
-          const ps = `${p.toString()},${s.d}`
+        .forEach(({ p, d }) => {
+          const cost = s.cost + (d === s.d ? 1 : 1001)
+          const ps = p.toString(s.d)
           const prev = seen.get(ps)
           if (prev === undefined || cost <= prev) {
             seen.set(ps, cost)
@@ -54,7 +52,7 @@ const combined = (rawInput: string) => {
     }
   }
   const bestCost = min(toEnd.map((s) => s.cost))
-  return toEnd.filter(s => s.cost === bestCost)
+  return toEnd.filter((s) => s.cost === bestCost)
 }
 
 const sample1 = `
