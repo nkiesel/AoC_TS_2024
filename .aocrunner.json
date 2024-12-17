@@ -232,13 +232,13 @@
         "solved": false,
         "result": "4,0,4,7,1,2,7,1,6",
         "attempts": [],
-        "time": 0.017458
+        "time": 0.027417
       },
       "part2": {
         "solved": false,
         "result": "202322348616234",
         "attempts": [],
-        "time": 0.5355
+        "time": 0.540542
       }
     },
     {

@@ -1,30 +1,30 @@
 import run from "aocrunner"
 
 class Computer {
-  a: BigInt
-  b: BigInt
-  c: BigInt
+  a: bigint
+  b: bigint
+  c: bigint
   output: number[] = []
   instructionPointer = 0
 
   constructor(
-    private da: BigInt,
-    private db: BigInt,
-    private dc: BigInt,
+    private initialA: bigint,
+    private initialB: bigint,
+    private initialC: bigint,
     public program: number[],
   ) {
-    this.reset(da)
+    this.reset(initialA)
   }
 
-  reset(na: BigInt) {
-    this.a = na
-    this.b = this.db
-    this.c = this.dc
+  reset(a: bigint) {
+    this.a = a
+    this.b = this.initialB
+    this.c = this.initialC
     this.instructionPointer = 0
     this.output = []
   }
 
-  combo(operand: number): BigInt {
+  combo(operand: number): bigint {
     switch (operand) {
       case 4:
         return this.a
@@ -37,11 +37,11 @@ class Computer {
     }
   }
 
-  div(operand: number): BigInt {
+  div(operand: number): bigint {
     return this.a >> this.combo(operand)
   }
 
-  execute(na: BigInt = this.da): string {
+  execute(na: bigint = this.initialA): string {
     this.reset(na)
     while (this.instructionPointer < this.program.length) {
       const opCode = this.program[this.instructionPointer]
@@ -54,17 +54,16 @@ class Computer {
           this.b = this.b ^ BigInt(operand)
           break
         case 2:
-          this.b = this.combo(operand) % BigInt(8)
+          this.b = this.combo(operand) % 8n
           break
         case 3:
-          if (this.a !== BigInt(0)) this.instructionPointer = operand - 2
+          if (this.a !== 0n) this.instructionPointer = operand - 2
           break
         case 4:
           this.b = this.b ^ this.c
           break
         case 5:
-          let next = Number(this.combo(operand) % BigInt(8))
-          this.output.push(next)
+          this.output.push(Number(this.combo(operand) % 8n))
           break
         case 6:
           this.b = this.div(operand)
@@ -82,10 +81,13 @@ class Computer {
 const parseInput = (rawInput: string) => {
   const lines = rawInput.split("\n")
   return new Computer(
-    BigInt(lines[0].match(/\d+/)![0]),
-    BigInt(lines[1].match(/\d+/)![0]),
-    BigInt(lines[2].match(/\d+/)![0]),
-    lines[4].match(/\d.+/)![0].split(",").map((n) => parseInt(n)),
+    BigInt(lines[0].split(": ")[1]),
+    BigInt(lines[1].split(": ")[1]),
+    BigInt(lines[2].split(": ")[1]),
+    lines[4]
+      .split(": ")[1]
+      .split(",")
+      .map((n) => parseInt(n)),
   )
 }
 
@@ -98,7 +100,7 @@ const part2 = (rawInput: string) => {
   const computer = parseInput(rawInput)
   const ps = computer.program.join(",")
   let pi = ps.length - 1
-  let a = BigInt(0)
+  let a = 0n
   while (pi >= 0) {
     while (true) {
       const r = computer.execute(a)
@@ -112,7 +114,7 @@ const part2 = (rawInput: string) => {
       }
       a++
     }
-    a *= BigInt(8)
+    a *= 8n
   }
   return -1
 }
