@@ -40,32 +40,34 @@ const part1 = (rawInput: string) => {
 
 const part2 = (rawInput: string) => {
   const bytes = parseInput(rawInput)
-  const [mx, my] = bytes.length < 100 ? [6, 6] : [70, 70]
+  const [mx, my, count] = bytes.length < 100 ? [6, 6, 12] : [70, 70, 1024]
   const area = CharArea.create(mx + 1, my + 1, ".")
   const start = new Point(0, 0)
   const exit = new Point(mx, my)
-  for (const b of bytes) {
+  return bytes.find((b, i) => {
     area.set(b, "#")
-    const queue: Step[] = [{ p: start, i: 0 }]
-    const seen = new PointSet()
-    seen.add(start)
-    let noExit = true
-    while (queue.length > 0) {
-      const { p, i } = queue.shift()
-      if (p.equals(exit)) {
-        noExit = false
-        break
+    if (i > count) {
+      const queue: Step[] = [{ p: start, i: 0 }]
+      const seen = new PointSet()
+      seen.add(start)
+      let noExit = true
+      while (queue.length > 0) {
+        const { p, i } = queue.shift()
+        if (p.equals(exit)) {
+          noExit = false
+          break
+        }
+        area
+          .neighbors4(p)
+          .filter((n) => !seen.has(n) && area.get(n) != "#")
+          .forEach((n) => {
+            seen.add(n)
+            queue.unshift({ p: n, i: i + 1 })
+          })
       }
-      area
-        .neighbors4(p)
-        .filter((n) => !seen.has(n) && area.get(n) != "#")
-        .forEach((n) => {
-          seen.add(n)
-          queue.unshift({ p: n, i: i + 1 })
-        })
+      if (noExit) return b
     }
-    if (noExit) return b.toString()
-  }
+  }).toString()
 }
 
 const sample1 = `
