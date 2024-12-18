@@ -137,6 +137,10 @@ export class CharArea {
     this.maxY = this.area.length - 1
   }
 
+  static create(mx: number, my: number, c: string): CharArea {
+    return new CharArea(Array(mx).fill(".".repeat(my)).join("\n"))
+  }
+
   contains(p: Point) {
     return p.x >= 0 && p.x <= this.maxX && p.y >= 0 && p.y <= this.maxY
   }
