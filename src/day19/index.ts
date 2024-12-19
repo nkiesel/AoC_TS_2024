@@ -11,13 +11,9 @@ const parseInput = (rawInput: string): Towels => {
   return { patterns: t.split(", "), designs: d.split("\n") }
 }
 
-const part1 = (rawInput: string) => {
-  return combined(rawInput, 1)
-}
+const part1 = (rawInput: string) => combined(rawInput, 1)
 
-const part2 = (rawInput: string) => {
-  return combined(rawInput, 2)
-}
+const part2 = (rawInput: string) => combined(rawInput, 2)
 
 const combined = (rawInput: string, part: 1 | 2): number => {
   const towels = parseInput(rawInput)
