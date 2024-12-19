@@ -1,14 +1,9 @@
 import run from "aocrunner"
 import { sum } from "lodash-es"
 
-type Towels = {
-  patterns: string[]
-  designs: string[]
-}
-
-const parseInput = (rawInput: string): Towels => {
-  const [t, d] = rawInput.split("\n\n")
-  return { patterns: t.split(", "), designs: d.split("\n") }
+const parseInput = (rawInput: string) => {
+  const [p, d] = rawInput.split("\n\n")
+  return [p.split(", "), d.split("\n")]
 }
 
 const part1 = (rawInput: string) => combined(rawInput, 1)
@@ -16,18 +11,18 @@ const part1 = (rawInput: string) => combined(rawInput, 1)
 const part2 = (rawInput: string) => combined(rawInput, 2)
 
 const combined = (rawInput: string, part: 1 | 2): number => {
-  const towels = parseInput(rawInput)
+  const [patterns, designs] = parseInput(rawInput)
   return sum(
-    towels.designs.map((design) => {
+    designs.map((design) => {
       const l = design.length
       const counts: number[] = Array(l + 1).fill(0)
       counts[0] = 1
       for (let i = 0; i < l; i++) {
         const ci = counts[i]
         if (ci == 0) continue
-        for (const t of towels.patterns) {
-          const tl = i + t.length
-          if (tl <= l && design.slice(i, tl) === t) counts[tl] += ci
+        for (const p of patterns) {
+          const pi = i + p.length
+          if (pi <= l && design.slice(i, pi) === p) counts[pi] += ci
         }
       }
       return part == 1 ? Math.sign(counts[l]) : counts[l]
