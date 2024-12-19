@@ -2,13 +2,13 @@ import run from "aocrunner"
 import { sum } from "lodash-es"
 
 type Towels = {
-  towels: string[]
+  patterns: string[]
   designs: string[]
 }
 
 const parseInput = (rawInput: string): Towels => {
   const [t, d] = rawInput.split("\n\n")
-  return { towels: t.split(", "), designs: d.split("\n") }
+  return { patterns: t.split(", "), designs: d.split("\n") }
 }
 
 const part1 = (rawInput: string) => {
@@ -20,16 +20,16 @@ const part2 = (rawInput: string) => {
 }
 
 const combined = (rawInput: string, part: 1 | 2): number => {
-  const data = parseInput(rawInput)
+  const towels = parseInput(rawInput)
   return sum(
-    data.designs.map((design) => {
+    towels.designs.map((design) => {
       const l = design.length
       const counts: number[] = Array(l + 1).fill(0)
       counts[0] = 1
       for (let i = 0; i < l; i++) {
         const ci = counts[i]
         if (ci == 0) continue
-        for (const t of data.towels) {
+        for (const t of towels.patterns) {
           const tl = i + t.length
           if (tl <= l && design.slice(i, tl) === t) counts[tl] += ci
         }
