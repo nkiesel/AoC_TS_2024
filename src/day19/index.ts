@@ -29,11 +29,7 @@ const combined = (rawInput: string, part: 1 | 2): number => {
       for (let i = 0; i < l; i++) {
         for (const t of data.towels) {
           const tl = i + t.length
-          const n1 = tl <= l
-          const n2 = design.slice(i, tl)
-          if (tl <= l && design.slice(i, tl) === t) {
-            counts[tl] += counts[i]
-          }
+          if (tl <= l && design.slice(i, tl) === t) counts[tl] += counts[i]
         }
       }
       return part == 1 ? Math.sign(counts[l]) : counts[l]
