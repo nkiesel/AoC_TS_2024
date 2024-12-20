@@ -50,8 +50,15 @@ const part2 = (rawInput: string) => {
       r.py = (r.py + r.vy + wy) % wy
       s.add(`${r.px},${r.py}`)
     })
-    if (s.size === robots.length) return i
+    if (robots.some((r) => verticalLine(r, 10, s))) return i
   }
+}
+
+function verticalLine(r: Robot, d: number, s: Set<string>): boolean {
+  for (let y = r.py + 1; y <= r.py + d; y++) {
+    if (!s.has(`${r.px},${y}`)) return false
+  }
+  return true
 }
 
 const sample1 = `
@@ -80,8 +87,7 @@ run({
     solution: part1,
   },
   part2: {
-    tests: [
-    ],
+    tests: [],
     solution: part2,
   },
   trimTestInputs: true,
