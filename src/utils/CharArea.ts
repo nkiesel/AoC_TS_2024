@@ -75,8 +75,8 @@ export class Point {
       : `${this.x},${this.y},${suffix}`
   }
 
-  equals(p: Point): boolean {
-    return this.x === p.x && this.y === p.y
+  equals(p: Point | undefined): boolean {
+    return p !== undefined && this.x === p.x && this.y === p.y
   }
 
   moveXY(dx: number, dy: number, n?: number) {
@@ -87,6 +87,10 @@ export class Point {
   move(dir: Direction, n?: number) {
     const [dx, dy] = step.get(dir)
     return this.moveXY(dx, dy, n)
+  }
+
+  manhattanDistance(p: Point): number {
+    return Math.abs(this.x - p.x) + Math.abs(this.y - p.y)
   }
 }
 
@@ -166,12 +170,16 @@ export class CharArea {
     return new Point(x, y)
   }
 
-  tiles(filter?: (c: string) => boolean): Point[] {
+  ok(p: Point, condition?: (c: string) => boolean) {
+    return condition === undefined || condition(this.get(p))
+  }
+
+  tiles(condition?: (c: string) => boolean): Point[] {
     const list: Point[] = []
     for (let y = 0; y <= this.maxY; y++) {
       for (let x = 0; x <= this.maxX; x++) {
         const p = new Point(x, y)
-        if (!filter || filter(this.get(p))) {
+        if (this.ok(p, condition)) {
           list.push(p)
         }
       }
@@ -179,19 +187,36 @@ export class CharArea {
     return list
   }
 
-  groups(filter?: (c: string) => boolean): { [key: string]: Point[] } {
-    return this.tiles(filter).reduce((acc, point) => {
+  groups(condition?: (c: string) => boolean): { [key: string]: Point[] } {
+    return this.tiles(condition).reduce((acc, point) => {
       ;(acc[this.get(point)] ||= []).push(point)
       return acc
     }, {} as { [key: string]: Point[] })
   }
 
-  neighbors4(p: Point): Point[] {
+  neighbors4(p: Point, condition?: (c: string) => boolean): Point[] {
     return [
       p.move(Direction.N),
       p.move(Direction.E),
       p.move(Direction.S),
       p.move(Direction.W),
-    ].filter((p) => this.contains(p))
+    ].filter((p) => this.contains(p) && this.ok(p, condition))
+  }
+
+  manhattan(
+    p: Point,
+    max: number,
+    condition?: (c: string) => boolean,
+  ): Point[] {
+    const points: Point[] = []
+    for (let x = -max; x <= max; x++) {
+      for (let y = -max; y <= max; y++) {
+        const n = p.moveXY(x, y)
+        const d = p.manhattanDistance(n)
+        if (this.contains(n) && d > 0 && d <= max && this.ok(n, condition))
+          points.push(n)
+      }
+    }
+    return points
   }
 }
