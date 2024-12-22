@@ -24,17 +24,17 @@ class Ringbuffer {
   prev: number = 0
 
   add(n: number): void {
-    this.i = (this.i + 1) % 4
     this.l[this.i] = n - this.prev
     this.prev = n
+    this.i = (this.i + 1) % 4
   }
 
   key(): string {
     return [
+      this.l[this.i],
       this.l[(this.i + 1) % 4],
       this.l[(this.i + 2) % 4],
       this.l[(this.i + 3) % 4],
-      this.l[this.i],
     ].join(",")
   }
 }
