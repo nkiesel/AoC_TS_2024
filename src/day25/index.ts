@@ -6,20 +6,18 @@ const part1 = (rawInput: string) => {
   const input = parseInput(rawInput)
   const locks: number[][] = []
   const keys: number[][] = []
-  let isLock: boolean = undefined
   let nums: number[]
   input.forEach((line) => {
-    if (isLock == undefined) {
-      isLock = line === "#####"
+    if (nums === undefined) {
+      const isLock = line === "#####"
       nums = Array(5).fill(isLock ? 0 : -1)
-    } else if (line.length === 0) {
       ;(isLock ? locks : keys).push(nums)
-      isLock = undefined
+    } else if (line.length === 0) {
+      nums = undefined
     } else {
       line.split("").forEach((c, i) => (nums[i] += c === "#" ? 1 : 0))
     }
   })
-  ;(isLock ? locks : keys).push(nums)
 
   let count = 0
   for (const lock of locks) {
